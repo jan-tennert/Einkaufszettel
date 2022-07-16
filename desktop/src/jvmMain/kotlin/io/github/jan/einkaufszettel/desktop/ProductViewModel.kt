@@ -20,7 +20,9 @@ import io.github.jan.supacompose.exceptions.RestException
 import io.github.jan.supacompose.postgrest.postgrest
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.plugins.onDownload
 import io.ktor.client.request.get
+import io.ktor.http.takeFrom
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,8 +35,10 @@ import kotlinx.serialization.json.int
 import kotlinx.serialization.json.jsonPrimitive
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import java.awt.Desktop
 import java.io.File
 import java.net.UnknownHostException
+import kotlin.system.exitProcess
 
 class ProductViewModel : KoinComponent, AuthController {
 
@@ -241,11 +245,31 @@ class ProductViewModel : KoinComponent, AuthController {
         }
     }
 
+    fun downloadUpdate(version: Int, callback: (progress: Float) -> Unit) {
+        scope.launch {
+            val url = "https://github.com/jan-tennert/Einkaufszettel/releases/download/v$version/Einkaufszettel-windows.exe"
+            val data = httpClient.get {
+                this.url.takeFrom(url)
+                onDownload { bytesSentTotal, contentLength ->
+                    callback(bytesSentTotal.toFloat() / contentLength.toFloat())
+                }
+            }.body<ByteArray>()
+            val file = File(File(System.getProperty("java.io.tmpdir")), "Einkaufszettel-windows-$version.exe")
+            if(file.exists()) {
+                file.delete()
+                file.createNewFile()
+            }
+            file.writeBytes(data)
+            Desktop.getDesktop().open(file)
+            exitProcess(0)
+        }
+    }
+
     fun logout() {
         scope.launch {
             kotlin.runCatching {
                 supabaseClient.auth.invalidateSession()
-                profileFlow.value = UserStatus.NotFound
+                profileFlow.value = UserStatus.NotTried
             }.onFailure {
                 it.printStackTrace()
             }

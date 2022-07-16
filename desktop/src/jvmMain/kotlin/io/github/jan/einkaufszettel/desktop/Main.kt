@@ -81,7 +81,7 @@ fun main() {
                         }
                     }
                 } else if(version != 0 && version > Constants.VERSION) {
-                    VersionDialog(newVersion = version) {
+                    VersionDialog(newVersion = version, viewModel = viewModel) {
                         viewModel.versionFlow.value = -2
                     }
                 }

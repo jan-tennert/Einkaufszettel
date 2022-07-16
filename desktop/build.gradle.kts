@@ -42,9 +42,19 @@ compose.desktop {
     application {
         mainClass = "MainKt"
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "jvm"
+            targetFormats(TargetFormat.Dmg, TargetFormat.Exe, TargetFormat.Deb)
+            packageName = "Einkaufszettel"
             packageVersion = "1.0.0"
+
+            val iconsRoot = project.file("src/jvmMain/resources")
+            windows {
+                iconFile.set(iconsRoot.resolve("orders.ico"))
+                shortcut = true
+            }
+            linux {
+                shortcut = true
+                iconFile.set(iconsRoot.resolve("orders.png"))
+            }
         }
     }
 }

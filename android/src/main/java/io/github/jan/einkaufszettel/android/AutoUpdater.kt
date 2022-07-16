@@ -10,12 +10,9 @@ import android.os.Build
 import androidx.compose.runtime.MutableState
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.content.FileProvider
+import io.github.jan.einkaufszettel.common.downloadFile
 import io.github.jan.einkaufszettel.common.repositories.product.ProductRepository
 import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.request.get
-import io.ktor.http.contentLength
-import io.ktor.utils.io.ByteReadChannel
 import java.io.File
 
 
@@ -67,18 +64,4 @@ class AutoUpdater(private val httpClient: HttpClient) {
         startActivity(applicationContext, intent, null)
     }
 
-}
-suspend fun HttpClient.downloadFile(file: File, url: String, callback: (Float) -> Unit) {
-    val response = get(url)
-    var offset = 0
-    val byteBufferSize = 1024 * 100
-    val channel = response.body<ByteReadChannel>()
-    val contentLen = response.contentLength()?.toInt() ?: 0
-    val data = ByteArray(contentLen)
-    do {
-        val currentRead = channel.readAvailable(data, offset, byteBufferSize)
-        callback((if(contentLen == 0) 0 else ( offset / contentLen.toDouble() ) * 100).toFloat())
-        offset += currentRead
-    } while (currentRead >= 0)
-    file.writeBytes(data)
 }
