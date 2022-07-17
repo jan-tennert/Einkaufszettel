@@ -3,6 +3,7 @@ package io.github.jan.einkaufszettel.common.ui.dialog
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
@@ -25,6 +26,7 @@ import io.github.jan.supacompose.auth.user.UserSession
 actual fun ProfileDialog(
     session: UserSession,
     createProfile: (name: String) -> Unit,
+    logout: () -> Unit,
     disable: () -> Unit
 ) {
     Dialog(onCloseRequest = disable, resizable = false, title = "Profil erstellen", state = rememberDialogState(height = 200.dp)) {
@@ -34,10 +36,17 @@ actual fun ProfileDialog(
                 Text("Bitte gib einen Namen ein um dein Profil zu erstellen:", modifier = Modifier.align(
                     Alignment.CenterHorizontally).padding(bottom = 13.dp))
                 TextField(username, { username = it }, label = { Text("Name") })
-                Button(onClick = {
-                    createProfile(username)
-                }) {
-                    Text("Erstellen")
+                Row {
+                    Button(onClick = {
+                        createProfile(username)
+                    }) {
+                        Text("Erstellen")
+                    }
+                    Button(onClick = {
+                        logout()
+                    }, modifier = Modifier.padding(start = 10.dp)) {
+                        Text("Account wechseln")
+                    }
                 }
             }
         }

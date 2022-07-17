@@ -37,6 +37,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import org.koin.core.context.startKoin
+import kotlin.system.exitProcess
 
 fun main() {
     startKoin {
@@ -63,7 +64,7 @@ fun main() {
                         if(status == Auth.Status.NOT_AUTHENTICATED) {
                             AuthScreen(viewModel)
                         } else if(userProfile is UserStatus.NotFound && status == Auth.Status.AUTHENTICATED) {
-                            session?.let { ProfileDialog(it, { name -> viewModel.createProfile(session!!.user!!.id, name)}, {}) }
+                            session?.let { ProfileDialog(it, { name -> viewModel.createProfile(session!!.user!!.id, name)}, { viewModel.logout() }, { exitProcess(0) }) }
                         } else if(status == Auth.Status.LOADING_FROM_STORAGE) {
                             Box(contentAlignment = Alignment.Center) {
                                 CircularProgressIndicator(Modifier.size(20.dp))

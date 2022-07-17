@@ -144,9 +144,14 @@ object News {
     ))
 
     val VERSION_35 = createNews(35, listOf(
-        "Desktop Version",
+        "Desktop Version unter https://github.com/jan-tennert/Einkaufszettel/releases",
         "Man kann nun bei den Produkten durch das scrollen alle Shops neuladen",
         "Man kann beim Home Screen nun Shops einklappen"
+    ))
+
+    val VERSION_36 = createNews(36, listOf(
+        "Es wird nun ein Fehler angezeigt, wenn man ein Profil erstellt, wessen Name bereits benutzt wird",
+        "Man kann sich nun beim Profil-Erstell Dialog wieder abmelden",
     ))
 
     private fun createNews(version: Int, news: List<String>) {

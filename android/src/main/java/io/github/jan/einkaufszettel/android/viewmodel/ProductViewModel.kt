@@ -261,8 +261,17 @@ class ProductViewModel(
                 profileFlow.value = UserStatus.Success(it)
             }.onFailure {
                 it.printStackTrace()
+                when(it) {
+                    is RestException -> {
+                        if(it.status == 409) {
+                            pushEvent(UIEvent.AlertEvent("Der Benutzer ist bereits vorhanden. Bitte wähle einen anderen Namen"))
+                        } else {
+                            pushEvent(UIEvent.AlertEvent("Fehler beim Erstellen des Profils. Bitte überprüfe deine Internetverbindung."))
+                        }
+                    }
+                    else -> pushEvent(UIEvent.AlertEvent("Fehler beim Erstellen des Profils. Bitte überprüfe deine Internetverbindung."))
+                }
                 profileFlow.value = UserStatus.NotFound
-                pushEvent(UIEvent.AlertEvent("Fehler beim Erstellen des Profils. Bitte überprüfe deine Internetverbindung."))
             }
         }
     }

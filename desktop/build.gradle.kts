@@ -28,6 +28,7 @@ kotlin {
                 // https://mvnrepository.com/artifact/ch.qos.logback/logback-classic
                 implementation("ch.qos.logback:logback-classic:1.3.0-alpha16")
                 implementation("io.github.g0dkar:qrcode-kotlin-jvm:3.1.0")
+                implementation("io.github.microutils:kotlin-logging-jvm:2.1.20")
             }
         }
         val jvmTest by getting {
@@ -44,12 +45,13 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Exe, TargetFormat.Deb)
             packageName = "Einkaufszettel"
-            packageVersion = "1.0.0"
+            packageVersion = "1.0.1"
 
             val iconsRoot = project.file("src/jvmMain/resources")
             windows {
                 iconFile.set(iconsRoot.resolve("orders.ico"))
                 shortcut = true
+                perUserInstall = true
             }
             linux {
                 shortcut = true

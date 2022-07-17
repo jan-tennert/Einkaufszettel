@@ -33,6 +33,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.int
 import kotlinx.serialization.json.jsonPrimitive
+import mu.KotlinLogging
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.awt.Desktop
@@ -50,6 +51,7 @@ class ProductViewModel : KoinComponent, AuthController {
     val cardRepository: CardRepository by inject()
     val shopRepository: ShopRepository by inject()
     val httpClient: HttpClient by inject()
+    private val logger = KotlinLogging.logger("ProductViewModel")
 
     val profileFlow = MutableStateFlow<UserStatus>(UserStatus.NotTried)
     val shopFlow = MutableStateFlow<List<Shop>>(emptyList())
@@ -95,8 +97,17 @@ class ProductViewModel : KoinComponent, AuthController {
                 profileFlow.value = UserStatus.Success(it)
             }.onFailure {
                 it.printStackTrace()
+                when(it) {
+                    is RestException -> {
+                        if(it.status == 409) {
+                            pushEvent(UIEvent.AlertEvent("Der Benutzer ist bereits vorhanden. Bitte wähle einen anderen Namen"))
+                        } else {
+                            pushEvent(UIEvent.AlertEvent("Fehler beim Erstellen des Profils. Bitte überprüfe deine Internetverbindung."))
+                        }
+                    }
+                    else -> pushEvent(UIEvent.AlertEvent("Fehler beim Erstellen des Profils. Bitte überprüfe deine Internetverbindung."))
+                }
                 profileFlow.value = UserStatus.NotFound
-                pushEvent(UIEvent.AlertEvent("Fehler beim Erstellen des Profils. Bitte überprüfe deine Internetverbindung."))
             }
         }
     }

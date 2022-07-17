@@ -7,12 +7,15 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import io.github.jan.einkaufszettel.common.navigation.MenuItem
 import io.github.jan.einkaufszettel.common.ui.screen.HomeScreenExtraText
 import io.github.jan.einkaufszettel.desktop.ProductViewModel
@@ -35,7 +38,7 @@ fun HomeScreen(
                 Box(modifier = Modifier.fillMaxWidth().clickable {
                     foldMap[shop.id] = !(foldMap[shop.id] ?: false)
                 }.animateItemPlacement(), contentAlignment = Alignment.Center) {
-
+                    Text(shop.name, fontSize = 20.sp, fontWeight = FontWeight.Bold)
                 }
             }
             if(foldMap[shop.id] != true) {

@@ -75,7 +75,7 @@ class MainActivity : ComponentActivity() {
                         if(status == Auth.Status.NOT_AUTHENTICATED) {
                             AuthScreen(viewModel)
                         } else if(userProfile is UserStatus.NotFound && status == Auth.Status.AUTHENTICATED) {
-                            session?.let { ProfileDialog(it, { name -> viewModel.createProfile(session!!.user!!.id, name)}, {}) }
+                            session?.let { ProfileDialog(it, { name -> viewModel.createProfile(session!!.user!!.id, name)}, { viewModel.logout(context)}, {}) }
                         } else if(status == Auth.Status.LOADING_FROM_STORAGE) {
                             Box(contentAlignment = Alignment.Center) {
                                 CircularProgressIndicator(Modifier.size(20.dp))
